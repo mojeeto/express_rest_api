@@ -4,6 +4,6 @@ import bodyParser from "body-parser";
 
 const parserMiddleware = Router();
 
-parserMiddleware.use(bodyParser.urlencoded({ extended: false }));
+parserMiddleware.use(bodyParser.json());
 
 export default parserMiddleware;
