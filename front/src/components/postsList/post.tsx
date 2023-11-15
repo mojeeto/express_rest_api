@@ -6,8 +6,6 @@ const Post: React.FC<PostProps> = ({ post }) => {
   return (
     <Card
       className="max-w-sm"
-      imgAlt="Meaningful alt text for an image that is not purely decorative"
-      imgSrc="https://www.flowbite-react.com/images/blog/image-1.jpg"
       horizontal
     >
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

@@ -1,14 +1,10 @@
 import PostsList from "./components/postsList";
-import { getPosts } from "./components/postsList/model";
-
-export const loader = async () => {
-  const posts = await getPosts();
-  return { posts };
-};
+import Modal from "./components/modal";
 
 export default function App() {
   return (
-    <div className="mt-16 flex flex-col items-center">
+    <div className="mt-16 flex flex-col items-center gap-5">
+      <Modal />
       <PostsList />
     </div>
   );
