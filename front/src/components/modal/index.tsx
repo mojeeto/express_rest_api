@@ -6,18 +6,41 @@ import {
   TextInput,
   Textarea,
 } from "flowbite-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Modal: React.FC = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>();
-  const [content, setContent] = useState<string>();
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
 
   function onCloseModal() {
     setOpenModal(false);
     setTitle("");
     setContent("");
+    setImage(null);
+    setPreview("");
   }
+
+  useEffect(() => {
+    let fileReader: FileReader | null = null;
+    if (image) {
+      fileReader = new FileReader();
+      fileReader.readAsDataURL(image);
+      fileReader.onloadend = () => {
+        if (fileReader) {
+          setPreview(fileReader.result);
+        }
+      };
+    }
+    return () => {
+      if (fileReader) {
+        fileReader.abort();
+        fileReader = null;
+      }
+    };
+  }, [image]);
 
   return (
     <>
@@ -47,7 +70,23 @@ const Modal: React.FC = () => {
               <div className="mb-2 block">
                 <Label htmlFor="image" value="Image" />
               </div>
-              <FileInput id="image" required />
+              <div className="flex flex-col gap-2">
+                <FileInput
+                  id="image"
+                  onChange={(e) =>
+                    setImage((_) => {
+                      if (!e.target.files) return null;
+                      return e.target.files[0];
+                    })
+                  }
+                  required
+                />
+                {preview ? (
+                  <img src={`${preview}`} />
+                ) : (
+                  <span>Please select a Image.</span>
+                )}
+              </div>
             </div>
             <div>
               <div className="mb-2 block">
