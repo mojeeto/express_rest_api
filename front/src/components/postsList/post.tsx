@@ -5,7 +5,11 @@ import { Link } from "react-router-dom";
 
 const Post: React.FC<PostProps> = ({ post }) => {
   return (
-    <Card className="max-w-sm" horizontal>
+    <Card
+      className="max-w-sm"
+      imgSrc={`http://localhost:8080/images/${post.imagePath}`}
+      horizontal
+    >
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         {post.title}
       </h5>
