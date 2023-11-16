@@ -4,11 +4,12 @@ export type PostType = {
   _id: string;
   title: string;
   content: string;
-  imageUrl: string;
+  imagePath: string;
   creator: {
     name: string;
   };
-  date: Date;
+  createAt: Date;
+  updatedAt: Date;
 };
 
 export type PostProps = {

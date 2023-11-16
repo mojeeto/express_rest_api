@@ -1,29 +1,15 @@
 import { ControllerType } from ".";
 import { validationResult } from "express-validator";
+import Post from "../model/post";
 
 export const getPosts: ControllerType = (req, res, next) => {
-  res.json([
-    {
-      _id: "1",
-      title: "Post Title",
-      content: "Post Content",
-      imageUrl: "images/image-not-available.png",
-      creator: {
-        name: "Mojeeto",
-      },
-      date: new Date(),
-    },
-    {
-      _id: "2",
-      title: "Post Title 2",
-      content: "Post Content 2",
-      imageUrl: "images/image-not-available.png",
-      creator: {
-        name: "Mojeeto",
-      },
-      date: new Date(),
-    },
-  ]);
+  Post.find()
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((err) => {
+      return next(err);
+    });
 };
 
 export const newPost: ControllerType = (req, res, next) => {
@@ -34,17 +20,22 @@ export const newPost: ControllerType = (req, res, next) => {
       message: "title must at least 2 character.",
     });
   }
-  res.status(201).json({
-    message: "Successful",
-    data: {
-      _id: "3",
-      title,
-      content,
-      imageUrl: "images/image-not-available.png",
-      creator: {
-        name: "Mojeeto",
-      },
-      date: new Date(),
+  const newPost = new Post({
+    title,
+    content,
+    imagePath: "Example image path",
+    creator: {
+      name: "Mojeeto",
     },
   });
+
+  newPost
+    .save()
+    .then((data) => {
+      res.status(201).json({
+        message: "Successful",
+        data,
+      });
+    })
+    .catch((err) => next(err));
 };
