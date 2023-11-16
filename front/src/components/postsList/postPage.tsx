@@ -9,7 +9,6 @@ const PostPage: React.FC = () => {
     if (postId) {
       getPost(postId)
         .then((post) => {
-          console.log(post);
           setPost(post.data.post as PostType);
         })
         .catch((err) => {

@@ -13,7 +13,7 @@ parserMiddleware.use(
     },
     storage: multer.diskStorage({
       filename(req, file, callback) {
-        callback(null, new Date().toISOString() + file.filename);
+        callback(null, new Date().toISOString() + file.originalname);
       },
       destination(req, file, callback) {
         callback(null, "images");

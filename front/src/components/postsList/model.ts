@@ -20,7 +20,7 @@ export const getPosts = () => {
   return axios.get("/posts");
 };
 
-export const newPost = (data: { title: string; content: string }) => {
+export const newPost = (data: FormData) => {
   return axios.post("/post", data);
 };
 

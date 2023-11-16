@@ -6,7 +6,7 @@ import {
   TextInput,
   Textarea,
 } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { newPost } from "../postsList/model";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../utils/redux";
@@ -31,30 +31,33 @@ const Modal: React.FC = () => {
   };
 
   const onSave = () => {
-    newPost({
-      title,
-      content,
-    })
-      .then((response) => {
-        if (response.status === 201) {
-          onCloseModal();
-          return dispatch(addPostAction(response.data.data));
-        }
-        if (response.status === 422)
-          return console.log("Error", response.data.message);
-      })
-      .catch((err) => {
-        console.log("ERROR:", err.response.status);
-        if (err.response.status === 422) {
-          dispatch(
-            addErrorAction({
-              type: "ERROR",
-              message:
-                "Please make sure the title length is bigger than 2 character.",
-            })
-          );
-        }
-      });
+    if (title && content && image) {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("image", image);
+      newPost(formData)
+        .then((response) => {
+          if (response.status === 201) {
+            onCloseModal();
+            return dispatch(addPostAction(response.data.data));
+          }
+          if (response.status === 422)
+            return console.log("Error", response.data.message);
+        })
+        .catch((err) => {
+          console.log("ERROR:", err.response.status);
+          if (err.response.status === 422) {
+            dispatch(
+              addErrorAction({
+                type: "ERROR",
+                message:
+                  "Please make sure the title length is bigger than 2 character.",
+              })
+            );
+          }
+        });
+    }
   };
 
   useEffect(() => {
