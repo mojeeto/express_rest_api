@@ -36,16 +36,22 @@ export const getPost: ControllerType = (req, res, next) => {
 
 export const newPost: ControllerType = (req, res, next) => {
   const { title, content } = req.body;
+  const image = req.file;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("Title must at least 2 character.") as CustomError;
     error.status = 422;
     return next(error);
   }
+  if (!image) {
+    const error = new Error("Image not exists!") as CustomError;
+    error.status = 422;
+    return next(error);
+  }
   const newPost = new Post({
     title,
     content,
-    imagePath: "Example image path",
+    imagePath: image.path,
     creator: {
       name: "Mojeeto",
     },
