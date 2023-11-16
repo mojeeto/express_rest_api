@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../utils/axios";
 
 export type PostType = {
   _id: string;
@@ -16,5 +16,9 @@ export type PostProps = {
 };
 
 export const getPosts = () => {
-  return axios.get("http://localhost:8080/posts");
+  return axios.get("/posts");
+};
+
+export const newPost = (data: { title: string; content: string }) => {
+  return axios.post("/post", { title: "Example", content: "Content" });
 };

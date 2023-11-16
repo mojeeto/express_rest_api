@@ -7,6 +7,10 @@ import {
   Textarea,
 } from "flowbite-react";
 import React, { useEffect, useState } from "react";
+import { newPost } from "../postsList/model";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../utils/redux";
+import { addPostAction } from "../../../utils/redux/action/postAction";
 
 const Modal: React.FC = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -14,14 +18,30 @@ const Modal: React.FC = () => {
   const [content, setContent] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+  const posts = useSelector((state: RootState) => state.posts);
+  const dispatch = useDispatch<AppDispatch>();
 
-  function onCloseModal() {
+  const onCloseModal = () => {
     setOpenModal(false);
     setTitle("");
     setContent("");
     setImage(null);
     setPreview("");
-  }
+  };
+
+  const onSave = () => {
+    newPost({
+      title,
+      content,
+    })
+      .then((response) => {
+        dispatch(addPostAction(response.data.data));
+        onCloseModal();
+      })
+      .catch((err) => {
+        console.log("ERROR:", err.message);
+      });
+  };
 
   useEffect(() => {
     let fileReader: FileReader | null = null;
@@ -82,7 +102,7 @@ const Modal: React.FC = () => {
                   required
                 />
                 {preview ? (
-                  <img src={`${preview}`} />
+                  <img className="w-[150px]" src={`${preview}`} />
                 ) : (
                   <span>Please select a Image.</span>
                 )}
@@ -100,8 +120,14 @@ const Modal: React.FC = () => {
               />
             </div>
             <div className="flex justify-center gap-4">
-              <Button color="failure">Cancel</Button>
-              <Button color="success" disabled>
+              <Button color="failure" onClick={onCloseModal}>
+                Cancel
+              </Button>
+              <Button
+                color="success"
+                onClick={onSave}
+                disabled={title === "" || content === "" || image === null}
+              >
                 Save
               </Button>
             </div>
