@@ -1,4 +1,5 @@
 import { ControllerType } from ".";
+import { validationResult } from "express-validator";
 
 export const getPosts: ControllerType = (req, res, next) => {
   res.json([
@@ -27,7 +28,12 @@ export const getPosts: ControllerType = (req, res, next) => {
 
 export const newPost: ControllerType = (req, res, next) => {
   const { title, content } = req.body;
-  console.log(req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      message: "title must at least 2 character.",
+    });
+  }
   res.status(201).json({
     message: "Successful",
     data: {

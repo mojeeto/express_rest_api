@@ -11,6 +11,7 @@ import { newPost } from "../postsList/model";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../utils/redux";
 import { addPostAction } from "../../../utils/redux/action/postAction";
+import { addErrorAction } from "../../../utils/redux/action/alertAction";
 
 const Modal: React.FC = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -35,11 +36,24 @@ const Modal: React.FC = () => {
       content,
     })
       .then((response) => {
-        dispatch(addPostAction(response.data.data));
-        onCloseModal();
+        if (response.status === 201) {
+          onCloseModal();
+          return dispatch(addPostAction(response.data.data));
+        }
+        if (response.status === 422)
+          return console.log("Error", response.data.message);
       })
       .catch((err) => {
-        console.log("ERROR:", err.message);
+        console.log("ERROR:", err.response.status);
+        if (err.response.status === 422) {
+          dispatch(
+            addErrorAction({
+              type: "ERROR",
+              message:
+                "Please make sure the title length is bigger than 2 character.",
+            })
+          );
+        }
       });
   };
 

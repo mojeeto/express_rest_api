@@ -20,5 +20,5 @@ export const getPosts = () => {
 };
 
 export const newPost = (data: { title: string; content: string }) => {
-  return axios.post("/post", { title: "Example", content: "Content" });
+  return axios.post("/post", data);
 };
