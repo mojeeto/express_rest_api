@@ -1,10 +1,12 @@
 import express from "express";
+import path from "path";
 import middleware from "./middleware";
 import router from "./routes";
 import mongoose from "mongoose";
 
 const app = express();
 
+app.use("/images", express.static(path.join(require.main!.path, "/images")));
 app.use(middleware);
 app.use(router);
 
