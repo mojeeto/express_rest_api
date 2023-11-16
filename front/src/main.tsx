@@ -7,6 +7,7 @@ import MainLayout from "./layout/main-layout.tsx";
 import ErrorPage from "./components/pages/error-page.tsx";
 import { Provider } from "react-redux";
 import store from "../utils/redux";
+import PostPage from "./components/postsList/postPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+      },
+      {
+        path: "/post/:postId",
+        element: <PostPage />,
       },
     ],
   },

@@ -23,3 +23,7 @@ export const getPosts = () => {
 export const newPost = (data: { title: string; content: string }) => {
   return axios.post("/post", data);
 };
+
+export const getPost = (postId: string) => {
+  return axios.get(`/post/${postId}`);
+};

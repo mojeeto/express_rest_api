@@ -13,6 +13,27 @@ export const getPosts: ControllerType = (req, res, next) => {
     });
 };
 
+export const getPost: ControllerType = (req, res, next) => {
+  const { postId } = req.params;
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error("Post not found") as CustomError;
+        error.status = 404;
+        return next(error);
+      }
+      res.json({
+        message: "Post founded!",
+        post,
+      });
+    })
+    .catch((err) => {
+      const error = new Error(err) as CustomError;
+      error.status = 500;
+      next(error);
+    });
+};
+
 export const newPost: ControllerType = (req, res, next) => {
   const { title, content } = req.body;
   const errors = validationResult(req);

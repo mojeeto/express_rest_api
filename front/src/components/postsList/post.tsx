@@ -1,13 +1,11 @@
 import React from "react";
 import { PostProps } from "./model";
 import { Button, Card } from "flowbite-react";
+import { Link } from "react-router-dom";
 
 const Post: React.FC<PostProps> = ({ post }) => {
   return (
-    <Card
-      className="max-w-sm"
-      horizontal
-    >
+    <Card className="max-w-sm" horizontal>
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         {post.title}
       </h5>
@@ -18,7 +16,9 @@ const Post: React.FC<PostProps> = ({ post }) => {
         Writed By: {post.creator.name}
       </span>
       <div className="flex gap-2.5">
-        <Button>View</Button>
+        <Link to={`/post/${post._id}`}>
+          <Button>View</Button>
+        </Link>
         <Button color="success">Edit</Button>
         <Button color="failure">Delete</Button>
       </div>
