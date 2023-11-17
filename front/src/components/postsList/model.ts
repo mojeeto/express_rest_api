@@ -24,6 +24,10 @@ export const newPost = (data: FormData) => {
   return axios.post("/post", data);
 };
 
+export const updatePost = (data: FormData, postId: string) => {
+  return axios.put(`/post/${postId}`, data);
+};
+
 export const getPost = (postId: string) => {
   return axios.get(`/post/${postId}`);
 };

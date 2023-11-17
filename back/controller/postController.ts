@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { ControllerType } from ".";
 import { validationResult } from "express-validator";
 import Post from "../model/post";
@@ -70,4 +72,42 @@ export const newPost: ControllerType = (req, res, next) => {
       error.status = 500;
       next(error);
     });
+};
+
+export const updatePost: ControllerType = (req, res, next) => {
+  const { postId } = req.params;
+  const { title, content } = req.body;
+  const image = req.file;
+
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error("Post not found") as CustomError;
+        error.status = 404;
+        return next(error);
+      }
+      post.title = title;
+      post.content = content;
+      if (image) {
+        clearImage(post.imagePath);
+        post.imagePath = image.path;
+      }
+      post
+        .save()
+        .then((post) => {
+          res.json({ message: "Product Updated", post });
+        })
+        .catch((err) => {
+          next(err);
+        });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const clearImage = (imagePath: string) => {
+  fs.unlink(path.join(require.main!.path, imagePath), (err) => {
+    if (!err) throw new Error("Error");
+  });
 };

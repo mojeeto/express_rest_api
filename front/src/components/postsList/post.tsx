@@ -2,6 +2,7 @@ import React from "react";
 import { PostProps } from "./model";
 import { Button, Card } from "flowbite-react";
 import { Link } from "react-router-dom";
+import Modal from "../modal";
 
 const Post: React.FC<PostProps> = ({ post }) => {
   return (
@@ -23,7 +24,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
         <Link to={`/post/${post._id}`}>
           <Button>View</Button>
         </Link>
-        <Button color="success">Edit</Button>
+        <Modal buttenValue="Edit" color="success" edit={true} post={post} />
         <Button color="failure">Delete</Button>
       </div>
     </Card>

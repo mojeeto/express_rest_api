@@ -6,20 +6,35 @@ import {
   TextInput,
   Textarea,
 } from "flowbite-react";
-import React, { useEffect, useRef, useState } from "react";
-import { newPost } from "../postsList/model";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../utils/redux";
+import React, { useEffect, useState } from "react";
+import { PostType, newPost, updatePost } from "../postsList/model";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../utils/redux";
 import { addPostAction } from "../../../utils/redux/action/postAction";
 import { addErrorAction } from "../../../utils/redux/action/alertAction";
 
-const Modal: React.FC = () => {
+const Modal: React.FC<{
+  color?:
+    | "blue"
+    | "gray"
+    | "dark"
+    | "light"
+    | "success"
+    | "failure"
+    | "warning"
+    | "purple";
+  buttenValue: string;
+  edit?: boolean;
+  post?: PostType;
+}> = ({ color = "blue", buttenValue, edit = false, post }) => {
+  if (edit && !post) throw new Error("Error edit is true but post is empty");
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [title, setTitle] = useState<string>(edit ? post!.title : "");
+  const [content, setContent] = useState<string>(edit ? post!.content : "");
   const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-  const posts = useSelector((state: RootState) => state.posts);
+  const [preview, setPreview] = useState<string | ArrayBuffer | null>(
+    edit ? "http://localhost:8080/" + post!.imagePath : null
+  );
   const dispatch = useDispatch<AppDispatch>();
 
   const onCloseModal = () => {
@@ -60,6 +75,26 @@ const Modal: React.FC = () => {
     }
   };
 
+  const onUpdate = () => {
+    if (title && content) {
+      console.log("OK");
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      if (image) formData.append("image", image);
+      updatePost(formData, post!._id)
+        .then((response) => {
+          if (response.status === 200) {
+            onCloseModal();
+            return dispatch(addPostAction(response.data.post));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   useEffect(() => {
     let fileReader: FileReader | null = null;
     if (image) {
@@ -81,8 +116,8 @@ const Modal: React.FC = () => {
 
   return (
     <>
-      <Button color="purple" onClick={() => setOpenModal(true)}>
-        New Post
+      <Button color={color} onClick={() => setOpenModal(true)}>
+        {buttenValue}
       </Button>
       <ModalFlowbite show={openModal} size="md" onClose={onCloseModal} popup>
         <ModalFlowbite.Header />
@@ -142,10 +177,12 @@ const Modal: React.FC = () => {
               </Button>
               <Button
                 color="success"
-                onClick={onSave}
-                disabled={title === "" || content === "" || image === null}
+                onClick={edit ? onUpdate : onSave}
+                disabled={
+                  title === "" || content === "" || (image === null && !edit)
+                }
               >
-                Save
+                {edit ? "Update" : "Save"}
               </Button>
             </div>
           </div>
